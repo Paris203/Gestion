@@ -8,37 +8,6 @@ from utils.AOLM import AOLM
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-import matplotlib.pyplot as plt
-
-def plot_and_save_image(image_tensor, save_path="saved_image.png"):
-    print(f" image_tensor shape: {image_tensor.shape}")
-    # Ensure the tensor is on the CPU and normalized (if necessary)
-    image = image_tensor.cpu() if image_tensor.is_cuda else image_tensor
-    
-    # Normalize the image to the range [0, 1] (optional)
-    image = (image - image.min()) / (image.max() - image.min())
-    
-    # Select the first 3 channels if the image has more than 3 (for RGB)
-    if image.shape[0] > 3:
-        image = image[:3, :, :]
-    
-    # Permute the dimensions to (Height, Width, Channels)
-    image = image.permute(1, 2, 0)
-    
-    # Plot the image using matplotlib
-    fig, ax = plt.subplots(figsize=(5, 5))  # Create the figure and axis
-    ax.imshow(image.numpy())  # Convert tensor to NumPy and display the image
-    plt.axis('off')  # Turn off axis for cleaner image display
-
-    # Save the image to the specified path
-    plt.savefig(save_path, bbox_inches='tight')  # Save with tight bounding box
-    print(f"Image saved at {save_path}")
-    
-    # Optionally show the image as well
-    plt.show()
-
-    # Close the figure to prevent memory issues
-    plt.close(fig)
 
 
 
@@ -141,7 +110,7 @@ class MainNet(nn.Module):
             local_imgs[i:i + 1] = F.interpolate(x[i:i + 1, :, x0:(x1+1), y0:(y1+1)], size=(448, 448),
                                                 mode='bilinear', align_corners=True)  # [N, 3, 224, 224]
         local_fm, local_embeddings, _ = self.pretrained_model(local_imgs.detach())  # [N, 2048]
-        plot_and_save_image(local_fm.detach())
+        #plot_and_save_image(local_fm.detach())
         local_logits = self.rawcls_net(local_embeddings)  # [N, 200]
 
         proposalN_indices, proposalN_windows_scores, window_scores \
