@@ -11,6 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 import matplotlib.pyplot as plt
 
 def plot_and_save_image(image_tensor, save_path="saved_image.png"):
+    print(f" image_tensor shape: {image_tensor.shape}")
     # Ensure the tensor is on the CPU and normalized (if necessary)
     image = image_tensor.cpu() if image_tensor.is_cuda else image_tensor
     
